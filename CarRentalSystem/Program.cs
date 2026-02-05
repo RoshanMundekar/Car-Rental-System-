@@ -15,7 +15,7 @@ builder.Services.AddSession(options =>
 // Configure Database
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(5, 5, 0)),
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
         mySqlOptions => mySqlOptions.MaxBatchSize(1)));
 
 var app = builder.Build();

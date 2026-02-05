@@ -11,6 +11,11 @@ public static class SeedData
         var configuration = serviceProvider.GetRequiredService<IConfiguration>();
         var connectionString = configuration.GetConnectionString("DefaultConnection");
 
+        if (string.IsNullOrEmpty(connectionString))
+        {
+            throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
+        }
+
         CreateDatabaseAndTablesAndDataManually(connectionString);
     }
 
