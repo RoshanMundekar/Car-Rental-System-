@@ -1,0 +1,87 @@
+@model CarRentalSystem.Models.Booking
+
+@{
+    ViewData["Title"] = "Book Car";
+    var car = ViewBag.Car as CarRentalSystem.Models.Car;
+}
+
+<div class="row justify-content-center animate-up">
+    <div class="col-md-8 col-lg-6">
+        <div class="premium-card">
+            <div class="d-flex align-items-center mb-4">
+                <i class="bi bi-calendar-check text-primary display-5 me-3"></i>
+                <div>
+                    <h2 class="fw-bold mb-0">Book @car?.Brand @car?.Model</h2>
+                    <p class="text-secondary mb-0">Complete the form below to reserve your ride.</p>
+                </div>
+            </div>
+
+            <div class="row mb-4">
+                <div class="col-12">
+                    <img src="@(string.IsNullOrEmpty(car?.ImageUrl) ? "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=400" : car.ImageUrl)" 
+                         class="img-fluid rounded-4 shadow-sm mb-3" alt="@car?.Brand @car?.Model" style="width: 100%; height: 250px; object-fit: cover;">
+                </div>
+                <div class="col-12 text-center">
+                    <p class="h4 text-primary fw-bold">@car?.PricePerDay.ToString("C") <small class="text-secondary">/ day</small></p>
+                </div>
+            </div>
+
+            <form asp-action="Create">
+                <input type="hidden" name="CarId" value="@car?.Id" />
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                
+                <div class="row g-3">
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary fw-semibold">Start Date</label>
+                        <input asp-for="StartDate" class="form-control" type="date" min="@DateTime.Now.ToString("yyyy-MM-dd")" required />
+                        <span asp-validation-for="StartDate" class="text-danger small"></span>
+                    </div>
+
+                    <div class="col-md-6">
+                        <label class="form-label text-secondary fw-semibold">End Date</label>
+                        <input asp-for="EndDate" class="form-control" type="date" required />
+                        <span asp-validation-for="EndDate" class="text-danger small"></span>
+                    </div>
+                </div>
+
+                <div id="summary" class="mt-4 p-3 rounded-4 bg-primary bg-opacity-10 d-none text-center animate-up">
+                    <p class="mb-0 text-white">Estimated Total: <span id="totalPrice" class="h3 fw-bold text-primary"></span></p>
+                </div>
+
+                <div class="mt-4">
+                    <button type="submit" class="btn-premium w-100 py-3">Review & Book Now</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        document.querySelectorAll('input[type="date"]').forEach(input => {
+            input.addEventListener('change', calculateTotal);
+        });
+
+        function calculateTotal() {
+            const startVal = document.getElementById('StartDate').value;
+            const endVal = document.getElementById('EndDate').value;
+            const pricePerDay = @(car?.PricePerDay ?? 0);
+
+            if (startVal && endVal) {
+                const start = new Date(startVal);
+                const end = new Date(endVal);
+                
+                if (end > start) {
+                    const diffTime = Math.abs(end - start);
+                    let diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                    if (diffDays === 0) diffDays = 1;
+
+                    document.getElementById('totalPrice').innerText = '$' + (diffDays * pricePerDay).toFixed(2);
+                    document.getElementById('summary').classList.remove('d-none');
+                } else {
+                    document.getElementById('summary').classList.add('d-none');
+                }
+            }
+        }
+    </script>
+}

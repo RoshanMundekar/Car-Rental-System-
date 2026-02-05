@@ -1,0 +1,58 @@
+@model IEnumerable<CarRentalSystem.Models.Booking>
+
+@{
+    ViewData["Title"] = "My Bookings";
+}
+
+<div class="mb-5 animate-up">
+    <h1 class="fw-bold">My <span class="text-primary">Rentals</span></h1>
+    <p class="text-secondary text-muted">Track your active and past car reservations.</p>
+</div>
+
+@if (!Model.Any()) {
+    <div class="premium-card text-center py-5 animate-up">
+        <i class="bi bi-calendar2-x text-secondary display-1 mb-4"></i>
+        <h3>No rentals found</h3>
+        <p class="text-secondary mb-4">You haven't made any bookings yet.</p>
+        <a asp-controller="Cars" asp-action="Index" class="btn-premium">Browse Available Cars</a>
+    </div>
+} else {
+    <div class="row g-4 overflow-hidden">
+        @foreach (var item in Model) {
+            <div class="col-lg-6 animate-up">
+                <div class="premium-card">
+                    <div class="d-flex justify-content-between align-items-start mb-4">
+                        <div>
+                            <span class="text-secondary small fw-bold text-uppercase">Booking #@item.Id</span>
+                            <h4 class="fw-bold mt-1">@item.Car?.Brand @item.Car?.Model</h4>
+                        </div>
+                        <span class="badge @(item.Status == "Confirmed" ? "bg-success" : "bg-warning") p-2 px-3 rounded-pill">
+                            @item.Status
+                        </span>
+                    </div>
+
+                    <div class="row bg-white bg-opacity-5 rounded-4 p-3 mb-4 mx-0">
+                        <div class="col-6 border-end border-secondary">
+                            <span class="text-secondary small d-block mb-1">Duration</span>
+                            <span class="fw-semibold small">@item.StartDate.ToShortDateString() - @item.EndDate.ToShortDateString()</span>
+                        </div>
+                        <div class="col-6 text-center">
+                            <span class="text-secondary small d-block mb-1">Total Paid</span>
+                            <span class="fw-bold text-primary">@item.TotalAmount.ToString("C")</span>
+                        </div>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <i class="bi bi-clock-history me-1 text-secondary"></i>
+                            <span class="text-secondary small">Created on @DateTime.Now.ToShortDateString()</span>
+                        </div>
+                        @if (item.Status == "Pending") {
+                            <a asp-controller="Payments" asp-action="Process" asp-route-bookingId="@item.Id" class="btn btn-sm btn-primary px-4 rounded-pill">Pay Now</a>
+                        }
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+}

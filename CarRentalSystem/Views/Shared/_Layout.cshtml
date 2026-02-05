@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Car Rental System</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="~/css/site.css">
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-lg navbar-dark fixed-top">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">
+                    <i class="bi bi-car-front-fill me-2"></i>CarRental
+                </a>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
+                    <ul class="navbar-nav flex-grow-1">
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Home" asp-action="Index">Home</a>
+                        </li>
+                        <li class="nav-item">
+                            <a class="nav-link" asp-controller="Cars" asp-action="Index">Browse Cars</a>
+                        </li>
+                        @if (Context.Session.GetString("UserId") != null) {
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Bookings" asp-action="MyBookings">My Bookings</a>
+                            </li>
+                            @if (Context.Session.GetString("UserRole") == "Admin") {
+                                <li class="nav-item ps-lg-3 border-start-lg border-secondary">
+                                    <a class="nav-link text-info" asp-controller="Admin" asp-action="Dashboard">Admin Dashboard</a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link text-info" asp-controller="Cars" asp-action="Manage">Manage Fleet</a>
+                                </li>
+                            }
+                        }
+                    </ul>
+                    <ul class="navbar-nav">
+                        @if (Context.Session.GetString("UserId") == null) {
+                            <li class="nav-item">
+                                 <a class="nav-link" asp-controller="Account" asp-action="Login">Login</a>
+                            </li>
+                            <li class="nav-item">
+                                 <a class="nav-link btn btn-outline-primary ms-lg-2 px-4" asp-controller="Account" asp-action="Register">Register</a>
+                            </li>
+                        } else {
+                            <li class="nav-item">
+                                <span class="nav-link fw-bold text-white">
+                                    <i class="bi bi-person-circle me-1"></i> @Context.Session.GetString("UserName")
+                                </span>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-danger" asp-controller="Account" asp-action="Logout">Logout</a>
+                            </li>
+                        }
+                    </ul>
+                </div>
+            </div>
+        </nav>
+    </header>
+    
+    <main role="main">
+        <div class="container mt-4">
+            @RenderBody()
+        </div>
+    </main>
+
+    <footer class="footer mt-5">
+        <div class="container text-center">
+            <p class="mb-0">&copy; @DateTime.Now.Year - CarRentalSystem. Built with Passion.</p>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

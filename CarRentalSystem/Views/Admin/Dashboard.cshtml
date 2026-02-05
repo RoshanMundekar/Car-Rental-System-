@@ -1,0 +1,96 @@
+@model IEnumerable<CarRentalSystem.Models.Booking>
+
+@{
+    ViewData["Title"] = "Admin Dashboard";
+}
+
+<div class="mb-5 animate-up">
+    <h1 class="fw-bold">Business <span class="text-info">Overview</span></h1>
+    <p class="text-secondary text-muted">Monitor rentals, revenue, and fleet activity.</p>
+</div>
+
+<div class="row g-4 mb-5 overflow-hidden">
+    <div class="col-md-4 animate-up">
+        <div class="premium-card text-center">
+            <i class="bi bi-cart-check text-primary display-5 mb-3 d-block"></i>
+            <h3 class="fw-bold mb-1">@ViewBag.TotalBookings</h3>
+            <p class="text-secondary mb-0">Total Bookings</p>
+        </div>
+    </div>
+    <div class="col-md-4 animate-up" style="animation-delay: 0.1s;">
+        <div class="premium-card text-center border-success">
+            <i class="bi bi-wallet2 text-success display-5 mb-3 d-block"></i>
+            <h3 class="fw-bold mb-1">@(((decimal?)ViewBag.TotalRevenue ?? 0).ToString("C"))</h3>
+            <p class="text-secondary mb-0">Total Revenue</p>
+        </div>
+    </div>
+    <div class="col-md-4 animate-up" style="animation-delay: 0.2s;">
+        <div class="premium-card text-center border-info">
+            <i class="bi bi-tools text-info display-5 mb-3 d-block"></i>
+            <h3 class="fw-bold mb-1">Fleet</h3>
+            <a asp-controller="Cars" asp-action="Manage" class="btn btn-outline-info btn-sm rounded-pill mt-2">Manage Fleet</a>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 animate-up">
+    <div class="col-lg-7">
+        <div class="premium-card pb-1">
+            <h5 class="fw-bold mb-4 border-bottom border-secondary pb-3">Recent Bookings</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead class="text-secondary small text-uppercase">
+                        <tr>
+                            <th>User</th>
+                            <th>Vehicle</th>
+                            <th>Amount</th>
+                            <th>Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model) {
+                            <tr>
+                                <td>
+                                    <div class="fw-bold">@item.User?.Name</div>
+                                    <div class="small text-secondary">@item.User?.Email</div>
+                                </td>
+                                <td>@item.Car?.Brand @item.Car?.Model</td>
+                                <td class="fw-bold text-primary">@item.TotalAmount.ToString("C")</td>
+                                <td>
+                                    <span class="badge @(item.Status == "Confirmed" ? "bg-success" : "bg-warning") rounded-pill">
+                                        @item.Status
+                                    </span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    <div class="col-lg-5">
+        <div class="premium-card pb-1">
+            <h5 class="fw-bold mb-4 border-bottom border-secondary pb-3">Latest Payments</h5>
+            <div class="table-responsive">
+                <table class="table table-dark table-hover align-middle mb-0">
+                    <thead class="text-secondary small text-uppercase">
+                        <tr>
+                            <th>ID</th>
+                            <th>Amount</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var p in (ViewBag.RecentPayments as List<CarRentalSystem.Models.Payment>) ?? new List<CarRentalSystem.Models.Payment>()) {
+                            <tr>
+                                <td class="text-secondary">#@p.BookingId</td>
+                                <td class="text-success fw-bold">@p.Amount.ToString("C")</td>
+                                <td class="small">@p.PaymentDate.ToString("MMM dd, HH:mm")</td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

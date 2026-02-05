@@ -1,0 +1,41 @@
+@model CarRentalSystem.Models.Car
+
+@{
+    ViewData["Title"] = "Delete Car";
+}
+
+<div class="row justify-content-center animate-up">
+    <div class="col-md-8 col-lg-5">
+        <div class="premium-card text-center">
+            <div class="mb-4">
+                <div class="mb-3 d-inline-block p-4 rounded-circle bg-danger bg-opacity-10">
+                    <i class="bi bi-exclamation-octagon text-danger display-4"></i>
+                </div>
+                <h2 class="fw-bold mb-1 text-danger">Confirm Deletion</h2>
+                <p class="text-secondary small">Are you absolutely sure you want to remove this vehicle from the fleet?</p>
+            </div>
+
+            <div class="p-4 bg-white bg-opacity-5 rounded-4 mb-5 mx-2">
+                <div class="d-flex align-items-center justify-content-center mb-3">
+                    <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://images.unsplash.com/photo-1494976388531-d1058494cdd8?auto=format&fit=crop&w=100" : Model.ImageUrl)" 
+                         class="rounded-3 me-3" style="width: 80px; height: 50px; object-fit: cover; border: 1px solid rgba(255,255,255,0.1);">
+                    <div class="text-start">
+                        <div class="fw-bold fs-5">@Model.Brand @Model.Model</div>
+                        <div class="small text-secondary">System ID: #@Model.Id</div>
+                    </div>
+                </div>
+                <div class="alert alert-warning bg-warning bg-opacity-10 border-0 text-warning small mb-0 rounded-3">
+                    <i class="bi bi-info-circle-fill me-2"></i> This action is permanent and will remove all associated records.
+                </div>
+            </div>
+
+            <form asp-action="Delete">
+                <input type="hidden" asp-for="Id" />
+                <div class="d-grid gap-3 pt-2">
+                    <button type="submit" class="btn btn-danger rounded-pill py-3 fw-bold">Delete Permanently</button>
+                    <a asp-action="Manage" class="btn btn-outline-secondary rounded-pill py-2">Cancel & Keep Vehicle</a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
