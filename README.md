@@ -38,26 +38,45 @@ A state-of-the-art, robust, and visually stunning Car Rental System built with *
 
 ### 1. Prerequisites
 - **.NET 8.0 SDK** or later.
-- **MySQL Server** (Version 5.1 or later).
+- **MySQL Server** (Version 5.5 or later).
 - **Web Browser** (Modern browser recommended).
 
 ### 2. Database Configuration
 1. Open `CarRentalSystem/appsettings.json`.
 2. Update the `DefaultConnection` string with your local MySQL credentials:
    ```json
-   "DefaultConnection": "Server=YOUR_SERVER;Database=car_rental_db;User=YOUR_USER;Password=YOUR_PASSWORD;AllowMultiQueries=true;AllowUserVariables=true;"
+   "DefaultConnection": "server=localhost;user=root;password=root;database=car_rental_db;CharSet=utf8"
    ```
-   > [!IMPORTANT]
-   > Do NOT remove `AllowMultiQueries=true`. It is critical for legacy MySQL compatibility.
 
 ### 3. Build & Run
 1. Open terminal in the project root.
-2. Run `dotnet build` to verify the environment.
-3. Run `dotnet run --project CarRentalSystem` to launch the app.
-4. Access the portal at: `http://localhost:5202`
+2. Run the application:
+   ```powershell
+   dotnet run --project CarRentalSystem
+   ```
+3. Access the portal at: `http://localhost:5202`
 
 ### 4. Automatic Initialization
 The system will automatically create the database and seed it with an **Admin Account** and **7 Premium Cars** on the first launch.
+
+---
+
+## 🛠️ Troubleshooting
+
+### ❌ "The process cannot access the file... because it is being used by another process"
+If you see this error during `dotnet run` or `dotnet build`, it means the application is already running. 
+- **Fix**: Kill the existing process via Task Manager or terminal:
+  ```powershell
+  taskkill /F /IM CarRentalSystem.exe
+  ```
+
+### ❌ "MySQL Syntax Error" (Persistent)
+If you encounter syntax errors during database operations (like Bookings), ensure your `Program.cs` is configured with:
+```csharp
+options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString),
+    mySqlOptions => mySqlOptions.MaxBatchSize(1))
+```
+The `MaxBatchSize(1)` is critical for compatibility with certain MySQL environments where multi-statement queries are restricted.
 
 ---
 
